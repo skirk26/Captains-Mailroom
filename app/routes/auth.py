@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
 from app import db
@@ -20,6 +20,7 @@ def login():
     if current_user.is_authenticated:
         return redirect("/")
 
+    username = ""
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
@@ -31,8 +32,8 @@ def login():
 
         flash("Invalid username or password.", "danger")
 
-    # Placeholder until the login template is built
-    return "Login page goes here."
+    # Keep the typed username after a failed attempt so only the password needs retyping
+    return render_template("login.html", username=username)
 
 
 @bp.route("/logout")

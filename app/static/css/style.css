@@ -1,0 +1,55 @@
+:root {
+  --cm-navy: #1C2B4A;
+  --cm-navy-dark: #131E34;
+  --cm-gold: #D9A441;
+  --cm-cream: #FAF6EE;
+}
+
+body {
+  background-color: var(--cm-cream);
+  color: var(--cm-navy);
+}
+
+.text-navy {
+  color: var(--cm-navy);
+}
+
+.text-gold {
+  color: var(--cm-gold);
+}
+
+.btn-navy {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--cm-navy);
+  --bs-btn-border-color: var(--cm-navy);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--cm-navy-dark);
+  --bs-btn-hover-border-color: var(--cm-navy-dark);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--cm-navy-dark);
+  --bs-btn-active-border-color: var(--cm-navy-dark);
+  --bs-btn-focus-shadow-rgb: 28, 43, 74;
+}
+
+.form-control:focus {
+  border-color: var(--cm-gold);
+  box-shadow: 0 0 0 0.25rem rgba(217, 164, 65, 0.25);
+}
+
+/* Login page */
+.login-wrapper {
+  min-height: 100vh;
+  min-height: 100dvh; /* avoids mobile browser toolbar jump */
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  border: none;
+  border-top: 4px solid var(--cm-gold);
+}
+
+.brand-label {
+  letter-spacing: 0.15em;
+  font-size: 0.8rem;
+}

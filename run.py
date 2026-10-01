@@ -1,3 +1,5 @@
+from flask_login import current_user
+
 from app import create_app
 
 app = create_app()
@@ -6,7 +8,12 @@ app = create_app()
 # TEMPORARY: confirms the server runs. Remove once app/routes/ blueprints exist.
 @app.route("/")
 def hello():
-    return "Hello, Captain's Mail"
+    if current_user.is_authenticated:
+        return (
+            f"Hello, Captain's Mail. Signed in as {current_user.username}. "
+            '<a href="/logout">Sign out</a>'
+        )
+    return 'Hello, Captain\'s Mail. <a href="/login">Sign in</a>'
 
 
 if __name__ == "__main__":

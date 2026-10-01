@@ -18,6 +18,14 @@ pip install -r requirements.txt
 copy .env.example .env         # then set a real SECRET_KEY in .env
 ```
 
+## Create a staff account
+
+```bash
+flask --app run create-staff <username>
+```
+
+You'll be prompted for the password (typed twice, hidden).
+
 ## Run
 
 ```bash

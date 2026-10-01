@@ -11,7 +11,7 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
     # The SQLite file lives in instance/, which is git-ignored
@@ -25,9 +25,13 @@ def create_app():
         UPLOAD_FOLDER=os.path.join(app.root_path, "static", "uploads"),
         MAX_CONTENT_LENGTH=16 * 1024 * 1024,  # cap photo uploads at 16 MB
     )
+    if test_config:
+        app.config.update(test_config)
 
     db.init_app(app)
     login_manager.init_app(app)
+    login_manager.login_view = "auth.login"
+    login_manager.login_message_category = "warning"
 
     # Importing models registers the tables; create_all only adds missing ones
     from app import models  # noqa: F401
@@ -35,6 +39,12 @@ def create_app():
     with app.app_context():
         db.create_all()
 
-    # Blueprints get registered here once app/routes/ is built
+    from app.routes.auth import bp as auth_bp
+
+    app.register_blueprint(auth_bp)
+
+    from app.cli import create_staff
+
+    app.cli.add_command(create_staff)
 
     return app

@@ -1,1 +1,55 @@
-# Database models (Staff, Recipient, Package) go here.
+from datetime import datetime, timezone
+
+from flask_login import UserMixin
+
+from app import db, login_manager
+
+
+def utc_now():
+    return datetime.now(timezone.utc)
+
+
+class Staff(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+
+    def __repr__(self):
+        return f"<Staff {self.username}>"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.get(Staff, int(user_id))
+
+
+class Recipient(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120))
+    mailbox_number = db.Column(db.String(20))
+
+    packages = db.relationship("Package", back_populates="recipient")
+
+    def __repr__(self):
+        return f"<Recipient {self.name} (box {self.mailbox_number})>"
+
+
+class Package(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tracking_number = db.Column(db.String(64), unique=True, nullable=False)
+    recipient_id = db.Column(db.Integer, db.ForeignKey("recipient.id"), nullable=False)
+    checked_in_by = db.Column(db.Integer, db.ForeignKey("staff.id"), nullable=False)
+    checked_out_by = db.Column(db.Integer, db.ForeignKey("staff.id"), nullable=True)
+    status = db.Column(db.String(20), nullable=False, default="checked_in")
+    location_photo_path = db.Column(db.String(255), nullable=True)
+    checked_in_at = db.Column(db.DateTime, nullable=False, default=utc_now)
+    checked_out_at = db.Column(db.DateTime, nullable=True)
+
+    recipient = db.relationship("Recipient", back_populates="packages")
+    # Two FKs point at Staff, so each relationship names the column it uses
+    checked_in_staff = db.relationship("Staff", foreign_keys=[checked_in_by])
+    checked_out_staff = db.relationship("Staff", foreign_keys=[checked_out_by])
+
+    def __repr__(self):
+        return f"<Package {self.tracking_number} ({self.status})>"

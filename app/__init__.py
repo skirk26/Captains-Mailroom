@@ -29,6 +29,12 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
 
+    # Importing models registers the tables; create_all only adds missing ones
+    from app import models  # noqa: F401
+
+    with app.app_context():
+        db.create_all()
+
     # Blueprints get registered here once app/routes/ is built
 
     return app
